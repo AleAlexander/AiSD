@@ -27,18 +27,22 @@ void errorMessage(enum err_num numberError, int index){
 
 int brackets(int index, int * checkCallRows){
 	int result = 0;
-    char a = getchar();
+    char a;
+    while((a = getchar()) == ' ')
+    	;
     print_tabs(index);
     printf("CALL_BRACKETS with symbol '%c'\n", a);
     index++;
     if (a == 'A')
     {
-        a = getchar();
+        while((a = getchar()) == ' ')
+        	;
         if (a == '(')
         {
             if(rowsBrackets(index, checkCallRows, a))
-            {
-                a = getchar();
+            {	
+                while((a = getchar()) == ' ')
+                	;
                 if(a == ')')
                     result = 1;
                 else {
@@ -86,7 +90,8 @@ int rowsBrackets(int index, int * checkCallRows, char a){
 	index++;
     if (brackets(index, checkCallRows))
     {
-        a = getchar();
+        while((a = getchar()) == ' ')
+        	;
         if (a == ';')
         {
             if(rowsBrackets(index, checkCallRows, a))
@@ -105,13 +110,15 @@ int rowsBrackets(int index, int * checkCallRows, char a){
 int main(){
 	int checkCallRows = 0;//to check the function call
 	int index = 0;//index for tabs
-	char ch = getchar();
-	if(ch == '\n' || ch == EOF){
+	char a;//current charachter
+	while((a = getchar()) == ' ')
+		;
+	if(a == '\n' || a == EOF){
 		printf("Input empty\n");
 		return 0;
 	}
     else
-    	ungetc(ch, stdin);
+    	ungetc(a, stdin);
     if(brackets(index, &checkCallRows))
         printf("It is brackets\n");
     else 

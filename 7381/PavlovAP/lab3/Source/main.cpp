@@ -4,10 +4,9 @@
 #define TEST
 
 char * readStr(char * bufferStr, char ch, int length){//reading string for false of true
-	bufferStr = new char[length];
 	bufferStr[0] = ch;
 	int i;
-	for(i = 1; i < length; i++)
+	for(i = 1; i < (length - 1); i++)
 		bufferStr[i] = std::cin.get();
 	bufferStr[i] = '\0';
 	return bufferStr;
@@ -15,7 +14,7 @@ char * readStr(char * bufferStr, char ch, int length){//reading string for false
 
 bool check(){
 	char ch = std::cin.get();
-	if(ch == ')' || ch == '&' || ch == '|' || ch == '\n' || ch == EOF){
+	if(ch == ')' || ch == '&' || ch == '|' || ch == '\n' || ch == EOF || ch == ' '){
 		std::cin.putback(ch);
 		return true;
 	}
@@ -33,9 +32,12 @@ char * demonstate(bool tmp, char * str){//function for demonstration
 bool analyzer(Stack <char> & stackOperand, Stack <bool>& stackLogik){
 	char ch;
 	char * bufferStr = nullptr;
-	if((ch = std::cin.get()) == 't')
+	while((ch = std::cin.get()) == ' ')//ignore spaces
+		;
+	if(ch == 't')
 	{
-		if(!strcmp(readStr(bufferStr, ch, 4), "true"))//
+		bufferStr = new char[6];
+		if(!strcmp(readStr(bufferStr, ch, 5), "true"))
 		{
 			delete [] bufferStr;
 			if(check()){
@@ -44,11 +46,15 @@ bool analyzer(Stack <char> & stackOperand, Stack <bool>& stackLogik){
 			}
 			return false;
 		}
-		else return false;
+		else{
+			delete [] bufferStr;
+			return false;
+		}
 	}
 	else if(ch == 'f')
 	{
-		if(!strcmp(readStr(bufferStr, ch, 5), "false"))
+		bufferStr = new char[6];
+		if(!strcmp(readStr(bufferStr, ch, 6), "false"))
 		{
 			delete [] bufferStr;
 			if(check()){
@@ -57,15 +63,22 @@ bool analyzer(Stack <char> & stackOperand, Stack <bool>& stackLogik){
 			}
 			return false;
 		}
-		else return false;
+		else{
+			delete [] bufferStr;
+			return false;
+		}
 	}
 	else if(ch == '('){
-		if((ch = std::cin.get()) == '!')
+		while((ch = std::cin.get()) == ' ')//ignore spaces
+			;
+		if(ch == '!')
 		{
 			stackOperand.push(ch);
 			if(analyzer(stackOperand, stackLogik))
 			{
-				if((ch = std::cin.get()) == ')')
+				while((ch = std::cin.get()) == ' ')//ignore spaces
+					;	
+				if(ch == ')')
 					return true;
 				else return false;
 			}
@@ -75,12 +88,16 @@ bool analyzer(Stack <char> & stackOperand, Stack <bool>& stackLogik){
 			std::cin.putback(ch);
 			if(analyzer(stackOperand, stackLogik))
 			{
-				if((ch = std::cin.get())== '&' || ch == '|')
+				while((ch = std::cin.get()) == ' ')//ignore spaces
+					;
+				if(ch == '&' || ch == '|')
 				{
 					stackOperand.push(ch);
 					if(analyzer(stackOperand, stackLogik))
 					{
-						if((ch = std::cin.get()) == ')')
+						while((ch = std::cin.get()) == ' ')
+							;
+						if(ch == ')')
 							return true;
 						else return false;
 					}
@@ -98,9 +115,9 @@ bool calc(Stack <char> & stackOperand, Stack <bool>& stackLogik){
 #ifdef TEST
 	std::cout<<"Calculating logical expression..."<<std::endl;
 #endif
-	char * str1 = new char[5];//for
-	char * str2 = new char[5];//
-	char * str3 = new char[5];//
+	char * str1 = new char[6];//for
+	char * str2 = new char[6];//
+	char * str3 = new char[6];//
 	bool tmp1, tmp2;		  //demonstate
 	char operand;
 	bool result;
@@ -147,7 +164,8 @@ bool calc(Stack <char> & stackOperand, Stack <bool>& stackLogik){
 
 int main(){
 	char ch;
-	ch = std::cin.get();
+	while((ch = std::cin.get()) == ' ')//ignore spaces
+		;
 	if(ch == '\n' || ch == EOF){  //if input is empty
 		std::cout<<"Input is empty"<<std::endl;
 		return 0;
